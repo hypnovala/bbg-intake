@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Brock Book Guide · A Private Invitation</title>
+<meta name="description" content="A quiet thirty-minute guided session. Begin with a few honest questions." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..600;1,9..144,300..500&family=Hanken+Grotesk:wght@400;500;600&display=swap" rel="stylesheet" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+  :root{
+    --cream:#FAF7E8;
+    --cream-deep:#F5EED8;
+    --paper:#FBF9EF;
+    --gold:#C9A96E;
+    --gold-soft:#DAC49A;
+    --gold-line:#E4D6BB;
+    --amber:#6B4C2A;
+    --brown:#2E1F0E;
+    --brown-soft:#523F2A;
+    --blush:#E7CFBE;
+    --shadow:rgba(46,31,14,.10);
+    --maxw:640px;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:
+      radial-gradient(1200px 700px at 50% -200px, #FFFDF4 0%, var(--cream) 55%, var(--cream-deep) 100%);
+    color:var(--brown);
+    font-family:"Hanken Grotesk",system-ui,sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+    padding:clamp(18px,4vw,44px) 16px 64px;
+  }
+  .sheet{
+    max-width:var(--maxw);
+    margin:0 auto;
+    background:var(--paper);
+    border:1px solid var(--gold-line);
+    border-radius:6px;
+    box-shadow:0 1px 0 rgba(255,255,255,.7) inset, 0 18px 50px -28px var(--shadow);
+    position:relative;
+    overflow:hidden;
+  }
+  .frame{
+    position:absolute; inset:10px;
+    border:1px solid var(--gold-line);
+    border-radius:3px; pointer-events:none;
+  }
+  .frame::after{
+    content:""; position:absolute; inset:5px;
+    border:1px solid var(--gold-soft); opacity:.55; border-radius:2px;
+  }
+  .inner{position:relative; padding:clamp(26px,6vw,54px) clamp(22px,6vw,56px);}
+
+  /* ---------- Header ---------- */
+  .hero{text-align:center; position:relative;}
+  .corner{position:absolute; width:78px; height:78px; opacity:.9}
+  .corner.tl{top:-6px; left:-8px}
+  .corner.tr{top:-6px; right:-8px; transform:scaleX(-1)}
+  .mono{
+    font-family:"Fraunces",serif; font-style:italic; font-weight:400;
+    font-size:26px; color:var(--gold); letter-spacing:.02em; margin:6px 0 10px;
+  }
+  .eyebrow{
+    font-size:10.5px; font-weight:500; letter-spacing:.34em;
+    color:var(--amber); text-transform:uppercase; margin-bottom:18px;
+  }
+  h1{
+    font-family:"Fraunces",serif; font-weight:340;
+    font-optical-sizing:auto;
+    font-size:clamp(34px,8.4vw,50px); line-height:1.02;
+    letter-spacing:-.01em; color:var(--brown); margin:0;
+  }
+  .subtitle{
+    font-family:"Fraunces",serif; font-style:italic; font-weight:380;
+    font-size:clamp(15px,3.6vw,18px); color:var(--amber); margin-top:10px;
+  }
+  .rule{display:flex; align-items:center; justify-content:center; gap:12px; margin:22px 0 4px;}
+  .rule span{height:1px; width:min(150px,28vw); background:linear-gradient(90deg,transparent,var(--gold-soft));}
+  .rule span+span{background:linear-gradient(90deg,var(--gold-soft),transparent);}
+  .rule svg{flex:none}
+
+  .intro{
+    text-align:center; color:var(--brown-soft);
+    font-size:clamp(14px,3.4vw,15.5px); line-height:1.62;
+    max-width:50ch; margin:20px auto 6px;
+  }
+  .intro b{font-weight:600; color:var(--brown)}
+  .note{
+    text-align:center; font-family:"Fraunces",serif; font-style:italic;
+    color:var(--gold); font-size:clamp(13px,3.2vw,15px); margin:14px auto 0;
+  }
+
+  /* ---------- Section label ---------- */
+  .section-label{text-align:center; margin:34px 0 6px;}
+  .section-label .t{
+    font-family:"Fraunces",serif; font-style:italic; color:var(--gold);
+    font-size:16px;
+  }
+
+  /* ---------- Questions ---------- */
+  .q{margin-top:30px;}
+  .q-head{display:flex; gap:13px; align-items:flex-start;}
+  .badge{
+    flex:none; width:21px; height:21px; border-radius:50%;
+    background:var(--gold); color:var(--cream);
+    font-size:11px; font-weight:600; display:flex; align-items:center;
+    justify-content:center; margin-top:2px; box-shadow:0 1px 0 rgba(255,255,255,.4) inset;
+  }
+  .q-text{font-weight:500; font-size:clamp(14.5px,3.6vw,16px); color:var(--brown); line-height:1.42;}
+  .q-sub{
+    font-family:"Fraunces",serif; font-style:italic; font-weight:400;
+    color:var(--amber); font-size:13px; margin-top:5px;
+  }
+  .q-body{margin:14px 0 0 34px;}
+  @media(max-width:480px){ .q-body{margin-left:0} }
+
+  /* options */
+  .opt{
+    display:flex; align-items:center; gap:12px;
+    padding:9px 12px; border:1px solid transparent; border-radius:9px;
+    cursor:pointer; transition:background .18s ease, border-color .18s ease, transform .08s ease;
+    -webkit-tap-highlight-color:transparent; user-select:none;
+  }
+  .opt:hover{background:rgba(201,169,110,.07)}
+  .opt:active{transform:translateY(.5px)}
+  .opt input{position:absolute; opacity:0; width:0; height:0}
+  .ind{
+    flex:none; width:19px; height:19px; border:1.6px solid var(--gold);
+    background:var(--cream-deep); display:grid; place-items:center;
+    transition:background .18s ease, border-color .18s ease;
+  }
+  .opt.radio .ind{border-radius:50%}
+  .opt.check .ind{border-radius:5px}
+  .ind::after{
+    content:""; width:8px; height:8px; border-radius:50%;
+    background:var(--gold); transform:scale(0); transition:transform .16s cubic-bezier(.3,1.4,.5,1);
+  }
+  .opt.check .ind::after{
+    width:11px; height:6px; border-radius:0; background:transparent;
+    border-left:2px solid var(--paper); border-bottom:2px solid var(--paper);
+    transform:rotate(-45deg) scale(0); margin-top:-2px;
+  }
+  .opt input:checked + .ind{background:var(--gold); border-color:var(--gold);}
+  .opt.radio input:checked + .ind::after{background:var(--paper); transform:scale(1);}
+  .opt.check input:checked + .ind::after{transform:rotate(-45deg) scale(1);}
+  .opt input:focus-visible + .ind{outline:2px solid var(--amber); outline-offset:2px;}
+  .opt-text{font-size:14.5px; color:var(--brown-soft);}
+  .opt input:checked ~ .opt-text{color:var(--brown);}
+
+  .other-row{display:flex; align-items:center; gap:10px; padding:6px 12px 0;}
+  .other-row .opt{padding-left:0; flex:none}
+  .other-input{
+    flex:1; border:none; border-bottom:1px solid var(--gold-soft);
+    background:transparent; font-family:inherit; font-size:14px; color:var(--brown);
+    padding:5px 2px; min-width:0;
+  }
+  .other-input:focus{outline:none; border-bottom-color:var(--gold);}
+
+  /* text answers */
+  textarea.write{
+    width:100%; min-height:62px; resize:vertical;
+    border:1px solid var(--gold-line); border-radius:10px; background:#FFFDF6;
+    font-family:inherit; font-size:14.5px; color:var(--brown); line-height:1.55;
+    padding:11px 13px; transition:border-color .18s ease, box-shadow .18s ease;
+  }
+  textarea.write::placeholder{color:#B7A580; font-style:italic; font-family:"Fraunces",serif;}
+  textarea.write:focus{outline:none; border-color:var(--gold); box-shadow:0 0 0 3px rgba(201,169,110,.14);}
+
+  /* ---------- Contact ---------- */
+  .contact{margin-top:38px;}
+  .contact h2{
+    font-family:"Fraunces",serif; font-weight:340; color:var(--brown);
+    font-size:21px; margin:0 0 4px;
+  }
+  .grid{display:grid; grid-template-columns:1fr 1fr; gap:16px 22px; margin-top:16px;}
+  @media(max-width:480px){ .grid{grid-template-columns:1fr} }
+  .field label{
+    display:block; font-size:9.5px; font-weight:600; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--amber); margin-bottom:6px;
+  }
+  .field input{
+    width:100%; border:none; border-bottom:1px solid var(--gold-soft);
+    background:transparent; font-family:inherit; font-size:15px; color:var(--brown);
+    padding:6px 2px; transition:border-color .18s ease;
+  }
+  .field input:focus{outline:none; border-bottom-color:var(--gold);}
+  .field.invalid input{border-bottom-color:#B4593C;}
+  .field.invalid label{color:#B4593C;}
+
+  /* ---------- Submit ---------- */
+  .closing{
+    text-align:center; font-family:"Fraunces",serif; font-style:italic;
+    color:var(--amber); font-size:clamp(13.5px,3.4vw,15px); margin:34px auto 0; max-width:46ch;
+  }
+  .actions{margin-top:24px; text-align:center;}
+  .btn{
+    appearance:none; border:none; cursor:pointer; font-family:inherit;
+    font-weight:600; font-size:15px; letter-spacing:.02em;
+    color:#FFFDF4; background:linear-gradient(180deg,#CBA76A,#B68E50);
+    padding:15px 38px; border-radius:40px;
+    box-shadow:0 10px 24px -10px rgba(150,110,50,.7), 0 1px 0 rgba(255,255,255,.35) inset;
+    transition:transform .12s ease, box-shadow .18s ease, filter .18s ease;
+  }
+  .btn:hover{transform:translateY(-1px); filter:brightness(1.03);}
+  .btn:active{transform:translateY(0);}
+  .btn:disabled{opacity:.6; cursor:default; transform:none;}
+  .btn:focus-visible{outline:2px solid var(--amber); outline-offset:3px;}
+  .hint{font-size:12.5px; color:var(--amber); margin-top:13px;}
+  .hint a{color:var(--amber);}
+
+  /* ---------- Footer ---------- */
+  .footer{margin-top:42px; text-align:center; position:relative; padding-top:6px;}
+  .footer .links{font-size:12px; font-weight:500; color:var(--brown);}
+  .footer .brand{font-size:10.5px; color:var(--amber); margin-top:5px; letter-spacing:.04em;}
+  .foot-floral{display:flex; justify-content:space-between; margin-bottom:4px;}
+
+  /* ---------- Status / success ---------- */
+  .status{
+    display:none; margin-top:18px; text-align:center;
+    font-size:13.5px; color:var(--amber);
+  }
+  .status.show{display:block;}
+  .success{
+    display:none; text-align:center; padding:14px 0 4px;
+  }
+  .success.show{display:block; animation:rise .5s ease both;}
+  .success .mark{
+    width:58px; height:58px; margin:0 auto 14px; border-radius:50%;
+    background:var(--cream-deep); border:1.5px solid var(--gold);
+    display:grid; place-items:center;
+  }
+  .success h2{font-family:"Fraunces",serif; font-weight:340; color:var(--brown); font-size:25px; margin:0 0 6px;}
+  .success p{color:var(--brown-soft); font-size:14.5px; max-width:42ch; margin:0 auto 18px;}
+  .link-btn{
+    background:none; border:1px solid var(--gold); color:var(--amber);
+    border-radius:30px; padding:11px 26px; font-family:inherit; font-weight:600;
+    font-size:13.5px; cursor:pointer; transition:background .18s ease;
+  }
+  .link-btn:hover{background:rgba(201,169,110,.1);}
+
+  /* ---------- Load motion ---------- */
+  .rise{opacity:0; transform:translateY(10px); animation:rise .7s ease forwards;}
+  .d1{animation-delay:.05s}.d2{animation-delay:.14s}.d3{animation-delay:.23s}.d4{animation-delay:.32s}
+  @keyframes rise{to{opacity:1; transform:none;}}
+  @media(prefers-reduced-motion:reduce){
+    .rise,.success.show{animation:none; opacity:1; transform:none;}
+    *{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+  <main class="sheet">
+    <div class="frame"></div>
+    <div class="inner">
+
+      <!-- ================= HERO ================= -->
+      <header class="hero">
+        <!-- corner florals -->
+        <svg class="corner tl" viewBox="0 0 80 80" fill="none" aria-hidden="true">
+          <path d="M6 8 C30 14 50 30 60 64" stroke="#DAC49A" stroke-width="1.1" fill="none"/>
+          <path d="M22 14 C30 18 34 26 30 36 C22 32 18 24 22 14Z" fill="#DAC49A" stroke="#C9A96E" stroke-width=".6"/>
+          <path d="M40 30 C48 33 51 40 48 49 C40 46 37 39 40 30Z" fill="#F5EED8" stroke="#C9A96E" stroke-width=".6"/>
+          <g transform="translate(60,64)">
+            <g fill="#E7CFBE" stroke="#C9A96E" stroke-width=".5">
+              <circle cx="0" cy="-6" r="4"/><circle cx="5.7" cy="-1.8" r="4"/>
+              <circle cx="3.5" cy="4.8" r="4"/><circle cx="-3.5" cy="4.8" r="4"/><circle cx="-5.7" cy="-1.8" r="4"/>
+            </g><circle r="2.2" fill="#C9A96E"/>
+          </g>
+        </svg>
+        <svg class="corner tr" viewBox="0 0 80 80" fill="none" aria-hidden="true">
+          <path d="M6 8 C30 14 50 30 60 64" stroke="#DAC49A" stroke-width="1.1" fill="none"/>
+          <path d="M22 14 C30 18 34 26 30 36 C22 32 18 24 22 14Z" fill="#DAC49A" stroke="#C9A96E" stroke-width=".6"/>
+          <path d="M40 30 C48 33 51 40 48 49 C40 46 37 39 40 30Z" fill="#F5EED8" stroke="#C9A96E" stroke-width=".6"/>
+          <g transform="translate(60,64)">
+            <g fill="#E7CFBE" stroke="#C9A96E" stroke-width=".5">
+              <circle cx="0" cy="-6" r="4"/><circle cx="5.7" cy="-1.8" r="4"/>
+              <circle cx="3.5" cy="4.8" r="4"/><circle cx="-3.5" cy="4.8" r="4"/><circle cx="-5.7" cy="-1.8" r="4"/>
+            </g><circle r="2.2" fill="#C9A96E"/>
+          </g>
+        </svg>
+
+        <div class="mono rise d1">bj</div>
+        <div class="eyebrow rise d1">Brock&nbsp;John · Somatic&nbsp;Education</div>
+        <h1 class="rise d2">The Brock<br>Book&nbsp;Guide</h1>
+        <div class="subtitle rise d2">a private invitation &amp; reflection</div>
+
+        <div class="rule rise d3">
+          <span></span>
+          <svg width="26" height="14" viewBox="0 0 26 14" aria-hidden="true">
+            <g transform="translate(13,7)" fill="#E7CFBE" stroke="#C9A96E" stroke-width=".5">
+              <circle cx="0" cy="-3.4" r="2.3"/><circle cx="3.2" cy="-1" r="2.3"/>
+              <circle cx="2" cy="2.7" r="2.3"/><circle cx="-2" cy="2.7" r="2.3"/><circle cx="-3.2" cy="-1" r="2.3"/>
+            </g><circle cx="13" cy="7" r="1.3" fill="#C9A96E"/>
+          </svg>
+          <span></span>
+        </div>
+
+        <p class="intro rise d3">
+          A quiet, thirty-minute session on FaceTime where we move through an
+          interactive worksheet together — drawn from a book chosen for exactly
+          where you are right now. <b>Part coaching, part embodiment practice.</b>
+          You don’t have to figure it out alone.
+        </p>
+        <p class="note rise d4">Take your time. There are no wrong answers — only honest ones.</p>
+      </header>
+
+      <!-- ================= FORM ================= -->
+      <div id="formWrap">
+        <div id="questions"></div>
+
+        <!-- contact -->
+        <section class="contact">
+          <div class="rule" style="margin:30px 0 18px">
+            <span></span>
+            <svg width="26" height="14" viewBox="0 0 26 14" aria-hidden="true">
+              <g transform="translate(13,7)" fill="#E7CFBE" stroke="#C9A96E" stroke-width=".5">
+                <circle cx="0" cy="-3.4" r="2.3"/><circle cx="3.2" cy="-1" r="2.3"/>
+                <circle cx="2" cy="2.7" r="2.3"/><circle cx="-2" cy="2.7" r="2.3"/><circle cx="-3.2" cy="-1" r="2.3"/>
+              </g><circle cx="13" cy="7" r="1.3" fill="#C9A96E"/>
+            </svg>
+            <span></span>
+          </div>
+          <h2>Where I can reach you</h2>
+          <div class="grid">
+            <div class="field" id="f-name"><label for="name">Name</label><input id="name" type="text" autocomplete="name" /></div>
+            <div class="field" id="f-email"><label for="email">Best email</label><input id="email" type="email" autocomplete="email" /></div>
+            <div class="field"><label for="phone">Phone / preferred app</label><input id="phone" type="text" autocomplete="tel" /></div>
+            <div class="field"><label for="time">Best time of day</label><input id="time" type="text" placeholder="" /></div>
+          </div>
+        </section>
+
+        <p class="closing">Your body already knows how to open. This is simply a place to begin listening.</p>
+
+        <div class="actions">
+          <button class="btn" id="submitBtn" type="button">Send my reflection</button>
+          <div class="status" id="status"></div>
+          <p class="hint">Private &amp; confidential — your answers go directly to Brock.</p>
+        </div>
+      </div>
+
+      <!-- ================= SUCCESS ================= -->
+      <div class="success" id="success">
+        <div class="mark">
+          <svg width="26" height="26" viewBox="0 0 26 26" fill="none" aria-hidden="true">
+            <path d="M6 13.5 L11 18.5 L20 8" stroke="#C9A96E" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h2>Thank you, <span id="successName">friend</span></h2>
+        <p>Your reflection is on its way to Brock. He’ll reach out personally to find a time and choose the right book for where you are.</p>
+        <button class="link-btn" id="downloadBtn" type="button">Download your copy (PDF)</button>
+      </div>
+
+      <!-- ================= FOOTER ================= -->
+      <footer class="footer">
+        <div class="foot-floral">
+          <svg width="64" height="52" viewBox="0 0 110 92" aria-hidden="true">
+            <path d="M6 84 C18 50 36 24 96 8" stroke="#C9A96E" stroke-width="1.1" fill="none"/>
+            <path d="M30 56 C40 52 50 56 54 66 C44 70 33 66 30 56Z" fill="#DAC49A" stroke="#C9A96E" stroke-width=".5"/>
+            <path d="M52 34 C62 30 72 34 76 44 C66 48 55 44 52 34Z" fill="#F5EED8" stroke="#C9A96E" stroke-width=".5"/>
+            <g transform="translate(96,9)">
+              <g fill="#E7CFBE" stroke="#C9A96E" stroke-width=".5">
+                <circle cx="0" cy="-7" r="5"/><circle cx="6.6" cy="-2.2" r="5"/>
+                <circle cx="4.1" cy="5.7" r="5"/><circle cx="-4.1" cy="5.7" r="5"/><circle cx="-6.6" cy="-2.2" r="5"/>
+              </g><circle r="2.6" fill="#C9A96E"/>
+            </g>
+          </svg>
+          <svg width="64" height="52" viewBox="0 0 110 92" style="transform:scaleX(-1)" aria-hidden="true">
+            <path d="M6 84 C18 50 36 24 96 8" stroke="#C9A96E" stroke-width="1.1" fill="none"/>
+            <path d="M30 56 C40 52 50 56 54 66 C44 70 33 66 30 56Z" fill="#DAC49A" stroke="#C9A96E" stroke-width=".5"/>
+            <path d="M52 34 C62 30 72 34 76 44 C66 48 55 44 52 34Z" fill="#F5EED8" stroke="#C9A96E" stroke-width=".5"/>
+            <g transform="translate(96,9)">
+              <g fill="#E7CFBE" stroke="#C9A96E" stroke-width=".5">
+                <circle cx="0" cy="-7" r="5"/><circle cx="6.6" cy="-2.2" r="5"/>
+                <circle cx="4.1" cy="5.7" r="5"/><circle cx="-4.1" cy="5.7" r="5"/><circle cx="-6.6" cy="-2.2" r="5"/>
+              </g><circle r="2.6" fill="#C9A96E"/>
+            </g>
+          </svg>
+        </div>
+        <div class="links">brockjohn.com&nbsp;&nbsp;·&nbsp;&nbsp;course.brockjohn.com</div>
+        <div class="brand">Brock John · Somatic Education</div>
+      </footer>
+
+    </div>
+  </main>
+
+<script>
+/* ============================================================
+   Brock Book Guide — intake logic
+   ============================================================ */
+const QUESTIONS = [
+  { id:"q1", type:"radio",
+    text:"When you leave a session — or any quiet moment that’s just yours — how long does that feeling of ease actually stay with you?",
+    options:[
+      "Under an hour — it fades pretty quickly",
+      "A few hours, then the day takes over",
+      "Most of the day, with some effort",
+      "It stays — I just rarely make the time for it",
+      "Honestly, I haven’t thought to notice"
+    ]},
+  { id:"q2", type:"checkbox",
+    text:"Outside of our work together, what do you currently do to keep your mind and body connected?",
+    sub:"Select all that apply — there’s no wrong answer here.",
+    options:[
+      "Warm bath or quiet rest",
+      "Movement — yoga, stretching, walking",
+      "Journaling or reflective writing",
+      "Breathwork or meditation",
+      "Nothing yet — I’m still searching"
+    ], other:true },
+  { id:"q3", type:"radio",
+    text:"How do you learn best?",
+    options:[
+      "Quietly on my own, at my own pace",
+      "With someone guiding me through it",
+      "A bit of both, depending on the topic",
+      "I’m not sure yet — still discovering"
+    ]},
+  { divider:"a little deeper" },
+  { id:"q4", type:"radio",
+    text:"On a scale of 1–10, how connected do you feel to your body’s sensations — her quiet signals, not just the physical?",
+    options:[
+      "1–3 · She feels distant or numb",
+      "4–5 · Somewhat present, on good days",
+      "6–7 · Connected — I notice a lot",
+      "8–10 · Deeply in tune — she’s very clear"
+    ]},
+  { id:"q5", type:"text",
+    text:"What’s something your body has been trying to tell you that your mind keeps overriding?",
+    placeholder:"Write as much or as little as feels true…" },
+  { id:"q6", type:"radio",
+    text:"When you hear the word “expansion” — sensual, energetic, creative — does it feel accessible, or does something tighten?",
+    options:[
+      "It feels exciting — I want more of that",
+      "Something tightens — I feel cautious",
+      "I’m curious but genuinely unsure",
+      "Both — excited and a little afraid",
+      "I haven’t really thought about it"
+    ]},
+  { id:"q7", type:"text",
+    text:"Is there a topic — intimacy, rest, your feminine power, your energy — you’ve wanted to go deeper on but never had the right container for?",
+    placeholder:"Name it here, even loosely…" },
+  { id:"q8", type:"text",
+    text:"Is there a book or an idea you’ve been curious about but never had the accountability to actually move through?",
+    sub:"No reader required — if nothing comes to mind, we’ll choose one together.",
+    placeholder:"A title, an author, or just a theme…" },
+  { id:"q9", type:"text",
+    text:"What would need to be true for you to show up fully — present in your body, not just your mind — for thirty minutes?",
+    placeholder:"What would make it feel safe and worth it…" },
+];
+
+const $ = (s,el=document)=>el.querySelector(s);
+const container = $("#questions");
+let nIndex = 0;
+
+QUESTIONS.forEach(q=>{
+  if(q.divider){
+    const d = document.createElement("div");
+    d.className = "section-label";
+    d.innerHTML = `<div class="rule" style="margin:8px 0">
+        <span></span>
+        <svg width="26" height="14" viewBox="0 0 26 14" aria-hidden="true">
+          <g transform="translate(13,7)" fill="#E7CFBE" stroke="#C9A96E" stroke-width=".5">
+            <circle cx="0" cy="-3.4" r="2.3"/><circle cx="3.2" cy="-1" r="2.3"/>
+            <circle cx="2" cy="2.7" r="2.3"/><circle cx="-2" cy="2.7" r="2.3"/><circle cx="-3.2" cy="-1" r="2.3"/>
+          </g><circle cx="13" cy="7" r="1.3" fill="#C9A96E"/>
+        </svg>
+        <span></span>
+      </div>
+      <div class="t">${q.divider}</div>`;
+    container.appendChild(d);
+    return;
+  }
+  nIndex++;
+  const wrap = document.createElement("div");
+  wrap.className = "q";
+  wrap.dataset.qid = q.id;
+  wrap.dataset.type = q.type;
+
+  let body = "";
+  if(q.type === "text"){
+    body = `<textarea class="write" data-qid="${q.id}" placeholder="${q.placeholder||""}" aria-label="${q.text.replace(/"/g,'&quot;')}"></textarea>`;
+  } else {
+    const cls = q.type === "checkbox" ? "check" : "radio";
+    const input = q.type === "checkbox" ? "checkbox" : "radio";
+    body = q.options.map((opt,i)=>`
+      <label class="opt ${cls}">
+        <input type="${input}" name="${q.id}" value="${opt.replace(/"/g,'&quot;')}" />
+        <span class="ind"></span>
+        <span class="opt-text">${opt}</span>
+      </label>`).join("");
+    if(q.other){
+      body += `<div class="other-row">
+        <label class="opt ${cls}" style="padding-right:0">
+          <input type="${input}" name="${q.id}" value="__other__" data-other="1" />
+          <span class="ind"></span>
+          <span class="opt-text">Something else</span>
+        </label>
+        <input class="other-input" type="text" data-other-text="${q.id}" placeholder="tell me…" aria-label="Something else" />
+      </div>`;
+    }
+  }
+
+  wrap.innerHTML = `
+    <div class="q-head">
+      <span class="badge">${nIndex}</span>
+      <div>
+        <div class="q-text">${q.text}</div>
+        ${q.sub ? `<div class="q-sub">${q.sub}</div>` : ""}
+      </div>
+    </div>
+    <div class="q-body">${body}</div>`;
+  container.appendChild(wrap);
+});
+
+/* tick the "something else" radio/checkbox when its text gets focus */
+document.querySelectorAll("[data-other-text]").forEach(inp=>{
+  inp.addEventListener("focus", ()=>{
+    const qid = inp.dataset.otherText;
+    const box = document.querySelector(`input[name="${qid}"][data-other]`);
+    if(box) box.checked = true;
+  });
+});
+
+/* ---------- collect ---------- */
+function collect(){
+  const out = [];
+  QUESTIONS.forEach(q=>{
+    if(q.divider) return;
+    let answer = "";
+    if(q.type === "text"){
+      answer = (document.querySelector(`textarea[data-qid="${q.id}"]`).value || "").trim();
+    } else if(q.type === "checkbox"){
+      const picked = [...document.querySelectorAll(`input[name="${q.id}"]:checked`)].map(el=>{
+        if(el.dataset.other){
+          const t = document.querySelector(`[data-other-text="${q.id}"]`).value.trim();
+          return t ? `Something else: ${t}` : "Something else";
+        }
+        return el.value;
+      });
+      answer = picked.join("; ");
+    } else {
+      const el = document.querySelector(`input[name="${q.id}"]:checked`);
+      answer = el ? el.value : "";
+    }
+    out.push({ q:q.text, a:answer });
+  });
+  return out;
+}
+
+/* ---------- PDF (branded summary) ---------- */
+function buildPDF(meta, answers){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit:"pt", format:"letter" });
+  const W = doc.internal.pageSize.getWidth();
+  const H = doc.internal.pageSize.getHeight();
+  const M = 56;
+  const gold=[201,169,110], brown=[46,31,14], amber=[107,76,42], soft=[82,63,42], line=[228,214,187];
+
+  function bg(){
+    doc.setFillColor(250,247,232); doc.rect(0,0,W,H,"F");
+    doc.setDrawColor(...line); doc.setLineWidth(.8); doc.rect(24,24,W-48,H-48);
+    doc.setDrawColor(...gold); doc.setLineWidth(.4); doc.rect(29,29,W-58,H-58);
+  }
+  bg();
+
+  // header
+  doc.setFont("times","italic"); doc.setTextColor(...gold); doc.setFontSize(20);
+  doc.text("bj", W/2, 74, {align:"center"});
+  doc.setFont("helvetica","normal"); doc.setTextColor(...amber); doc.setFontSize(8.5);
+  doc.text("B R O C K   J O H N   ·   S O M A T I C   E D U C A T I O N", W/2, 92, {align:"center"});
+  doc.setFont("times","normal"); doc.setTextColor(...brown); doc.setFontSize(30);
+  doc.text("The Brock Book Guide", W/2, 126, {align:"center"});
+  doc.setFont("times","italic"); doc.setTextColor(...amber); doc.setFontSize(12);
+  doc.text("a private reflection", W/2, 146, {align:"center"});
+  doc.setDrawColor(...gold); doc.setLineWidth(.6); doc.line(W/2-90,160,W/2+90,160);
+
+  // who
+  let y = 188;
+  doc.setFont("helvetica","bold"); doc.setTextColor(...brown); doc.setFontSize(10);
+  const who = [
+    meta.name && `Name:  ${meta.name}`,
+    meta.email && `Email:  ${meta.email}`,
+    meta.phone && `Phone / app:  ${meta.phone}`,
+    meta.time && `Best time:  ${meta.time}`,
+  ].filter(Boolean);
+  doc.setFont("helvetica","normal");
+  who.forEach(linei=>{ doc.text(linei, M, y); y += 16; });
+  y += 6;
+
+  // answers
+  answers.forEach((item,i)=>{
+    const qLines = doc.splitTextToSize(`${i+1}.  ${item.q}`, W-2*M);
+    const aText = item.a || "—";
+    const aLines = doc.splitTextToSize(aText, W-2*M-14);
+    const blockH = qLines.length*13 + aLines.length*13 + 16;
+    if(y + blockH > H-70){ doc.addPage(); bg(); y = 74; }
+
+    doc.setFont("helvetica","bold"); doc.setTextColor(...brown); doc.setFontSize(9.5);
+    doc.text(qLines, M, y); y += qLines.length*13 + 2;
+
+    doc.setFont("helvetica","normal"); doc.setTextColor(...soft); doc.setFontSize(10);
+    doc.text(aLines, M+14, y); y += aLines.length*13;
+
+    doc.setDrawColor(...line); doc.setLineWidth(.5); doc.line(M, y+6, W-M, y+6);
+    y += 18;
+  });
+
+  // footer on last page
+  doc.setFont("helvetica","normal"); doc.setTextColor(...amber); doc.setFontSize(8);
+  doc.text("brockjohn.com   ·   course.brockjohn.com", W/2, H-44, {align:"center"});
+  const stamp = new Date().toLocaleString();
+  doc.text(`Submitted ${stamp}`, W/2, H-32, {align:"center"});
+
+  return doc;
+}
+
+/* ---------- validation ---------- */
+function validate(meta){
+  let ok = true;
+  const fn = document.getElementById("f-name");
+  const fe = document.getElementById("f-email");
+  fn.classList.remove("invalid"); fe.classList.remove("invalid");
+  if(!meta.name){ fn.classList.add("invalid"); ok = false; }
+  if(!meta.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(meta.email)){ fe.classList.add("invalid"); ok = false; }
+  return ok;
+}
+
+/* ---------- submit ---------- */
+let lastDoc = null;
+const btn = $("#submitBtn");
+const statusEl = $("#status");
+
+btn.addEventListener("click", async ()=>{
+  const meta = {
+    name:$("#name").value.trim(),
+    email:$("#email").value.trim(),
+    phone:$("#phone").value.trim(),
+    time:$("#time").value.trim(),
+  };
+  if(!validate(meta)){
+    statusEl.className = "status show";
+    statusEl.textContent = "Please add your name and a valid email so Brock can reach you.";
+    document.getElementById(meta.name ? "f-email" : "f-name").scrollIntoView({behavior:"smooth", block:"center"});
+    return;
+  }
+
+  const answers = collect();
+  const doc = buildPDF(meta, answers);
+  lastDoc = doc;
+  const fileName = `BBG-Reflection-${meta.name.replace(/[^a-z0-9]+/gi,"-")}.pdf`;
+
+  btn.disabled = true;
+  statusEl.className = "status show";
+  statusEl.textContent = "Sending your reflection…";
+
+  let emailed = false;
+  try{
+    const base64 = doc.output("datauristring").split(",")[1];
+    const res = await fetch("/api/send-email", {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({
+        name: meta.name, email: meta.email, phone: meta.phone, time: meta.time,
+        answers,
+        pdfBase64: base64,
+        fileName
+      })
+    });
+    emailed = res.ok;
+  }catch(e){ emailed = false; }
+
+  // Always succeed for the client; offer the download regardless.
+  showSuccess(meta.name, fileName, emailed);
+});
+
+function showSuccess(name, fileName, emailed){
+  $("#formWrap").style.display = "none";
+  $("#successName").textContent = name.split(" ")[0] || "friend";
+  if(!emailed){
+    $("#success p").innerHTML =
+      "Your reflection is ready. Please download your copy below and send it to " +
+      "<a href='mailto:hello@brockjohn.com?subject=My%20Brock%20Book%20Guide%20Reflection'>hello@brockjohn.com</a> — " +
+      "or just save it and bring it to our call.";
+  }
+  $("#success").classList.add("show");
+  $("#success").scrollIntoView({behavior:"smooth", block:"start"});
+  $("#downloadBtn").onclick = ()=> lastDoc && lastDoc.save(fileName);
+}
+</script>
+</body>
+</html>
