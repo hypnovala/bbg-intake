@@ -2,6 +2,8 @@
   "version": 2,
   "outputDirectory": ".",
   "functions": {
-    "api/send-email.js": {}
+    "api/send-email.js": {
+      "runtime": "nodejs22.x"
+    }
   }
 }
