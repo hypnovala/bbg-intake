@@ -1,9 +1,13 @@
 {
   "version": 2,
-  "outputDirectory": ".",
-  "functions": {
-    "api/send-email.js": {
-      "maxDuration": 15
-    }
-  }
+  "builds": [
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "public/**", "use": "@vercel/static" },
+    { "src": "api/send-email.js", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/api/send-email", "dest": "/api/send-email.js" },
+    { "src": "/public/(.*)", "dest": "/public/$1" },
+    { "src": "/(.*)", "dest": "/index.html" }
+  ]
 }
