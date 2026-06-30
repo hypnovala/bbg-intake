@@ -3,7 +3,7 @@
   "outputDirectory": ".",
   "functions": {
     "api/send-email.js": {
-      "runtime": "nodejs22.x"
+      "maxDuration": 15
     }
   }
 }
